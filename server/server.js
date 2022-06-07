@@ -4,6 +4,7 @@ const express = require("express");
 
 const { ApolloSever } = require("apollo-server-express");
 const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
+const { resolvers, typeDefs } = require("./schema");
 
 const db = require("./config/connection");
 const routes = require("./routes");
@@ -21,9 +22,9 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(routes);
 
-async function startApolloServer(typeDefs, resolvers) {
+async function startApolloServer() {
   const httpServer = http.createServer(app);
-  const server = new ApolloServer({
+  const server = new ApolloSever({
     typeDefs,
     resolvers,
     // csrfPrevention: true,
@@ -34,7 +35,7 @@ async function startApolloServer(typeDefs, resolvers) {
   server.applyMiddleware({ app });
   await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
   console.log(
-    `🚀 Server ready at http://localhost:${PORT}/${server.graphqlPath}`
+    `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
   );
 }
 
